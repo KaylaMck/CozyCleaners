@@ -1,0 +1,6 @@
+@CozyCleaners_HostAddress = http://localhost:5054
+
+GET {{CozyCleaners_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
