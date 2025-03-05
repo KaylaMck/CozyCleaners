@@ -1,7 +1,13 @@
+// Update your ApplicationViews.jsx
 import { Route, Routes } from "react-router-dom";
 import { AuthorizedRoute } from "./auth/AuthorizedRoute";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
+import BookingForm from "./BookingForm";
+import AddressForm from "./AddressForm";
+import Dashboard from "./Dashboard";
+import RequestDetails from "./RequestDetails";
+import ServicesList from "./ServiceList";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -11,7 +17,39 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           index
           element={
             <AuthorizedRoute loggedInUser={loggedInUser}>
-              <Login setLoggedInUser={setLoggedInUser} />
+              <Dashboard />
+            </AuthorizedRoute>
+          }
+        />
+        <Route
+          path="services"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
+              <ServicesList />
+            </AuthorizedRoute>
+          }
+        />
+        <Route
+          path="book"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
+              <BookingForm />
+            </AuthorizedRoute>
+          }
+        />
+        <Route
+          path="addresses/new"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
+              <AddressForm />
+            </AuthorizedRoute>
+          }
+        />
+        <Route
+          path="requests/:id"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
+              <RequestDetails />
             </AuthorizedRoute>
           }
         />

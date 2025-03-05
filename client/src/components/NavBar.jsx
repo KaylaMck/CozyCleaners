@@ -1,58 +1,63 @@
-import { useState } from "react";
-import { NavLink as RRNavLink } from "react-router-dom";
-import {
-Button,
-Collapse,
-Nav,
-NavLink,
-NavItem,
-Navbar,
-NavbarBrand,
-NavbarToggler,
-} from "reactstrap";
-import { logout } from "../managers/authManager";
+// NavBar.jsx
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { logout } from '../managers/authManager';
 
-export default function NavBar({ loggedInUser, setLoggedInUser }) {
-const [open, setOpen] = useState(false);
+function NavBar({ loggedInUser, setLoggedInUser }) {
+  const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    logout().then(() => {
+      setLoggedInUser(null);
+      navigate('/login');
+    });
+  };
 
-const toggleNavbar = () => setOpen(!open);
-
-return (
-    <div>
-    <Navbar color="light" light fixed="true" expand="lg">
-        <NavbarBrand className="mr-auto" tag={RRNavLink} to="/">
-        🧹🧼House Rules
-        </NavbarBrand>
-        {loggedInUser ? (
-        <>
-            <NavbarToggler onClick={toggleNavbar} />
-            <Collapse isOpen={open} navbar>
-            <Nav navbar></Nav>
-            </Collapse>
-            <Button
-            color="primary"
-            onClick={(e) => {
-                e.preventDefault();
-                setOpen(false);
-                logout().then(() => {
-                setLoggedInUser(null);
-                setOpen(false);
-                });
-            }}
-            >
-            Logout
-            </Button>
-        </>
-        ) : (
-        <Nav navbar>
-            <NavItem>
-            <NavLink tag={RRNavLink} to="/login">
-                <Button color="primary">Login</Button>
-            </NavLink>
-            </NavItem>
-        </Nav>
-        )}
-    </Navbar>
-    </div>
-);
+  return (
+    // Remove the container class to make it full width
+    <nav className="navbar navbar-expand-lg navbar-light bg-light mb-4">
+      <div className="container-fluid"> {/* Change container to container-fluid */}
+        <Link className="navbar-brand" to="/">Cozy Cleaners</Link>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        
+        <div className="collapse navbar-collapse" id="navbarNav">
+          {loggedInUser ? (
+            <>
+              <ul className="navbar-nav me-auto">
+                <li className="nav-item">
+                  <Link className="nav-link" to="/">Home</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/book">Book A Cleaning</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/services">Services</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/completed">Completed Cleanings</Link>
+                </li>
+              </ul>
+              <span className="navbar-text me-3">
+                Hello, {loggedInUser.firstName}
+              </span>
+              <button onClick={handleLogout} className="btn btn-outline-danger">Logout</button>
+            </>
+          ) : (
+            <ul className="navbar-nav ms-auto">
+              <li className="nav-item">
+                <Link className="nav-link" to="/login">Login</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/register">Register</Link>
+              </li>
+            </ul>
+          )}
+        </div>
+      </div>
+    </nav>
+  );
 }
+
+export default NavBar;

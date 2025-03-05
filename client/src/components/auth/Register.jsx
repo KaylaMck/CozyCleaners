@@ -6,9 +6,7 @@ import { Button, FormFeedback, FormGroup, Input, Label } from "reactstrap";
 export default function Register({ setLoggedInUser }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -26,11 +24,13 @@ export default function Register({ setLoggedInUser }) {
       const newUser = {
         firstName,
         lastName,
-        userName,
         email,
-        address,
         password,
       };
+
+      // For debugging
+      console.log("Registering user:", newUser);
+
       register(newUser).then((user) => {
         if (user) {
           setLoggedInUser(user);
@@ -72,26 +72,6 @@ export default function Register({ setLoggedInUser }) {
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
-          }}
-        />
-      </FormGroup>
-      <FormGroup>
-        <Label>User Name</Label>
-        <Input
-          type="text"
-          value={userName}
-          onChange={(e) => {
-            setUserName(e.target.value);
-          }}
-        />
-      </FormGroup>
-      <FormGroup>
-        <Label>Address</Label>
-        <Input
-          type="text"
-          value={address}
-          onChange={(e) => {
-            setAddress(e.target.value);
           }}
         />
       </FormGroup>

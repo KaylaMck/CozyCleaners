@@ -122,9 +122,12 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegistrationDTO registration)
     {
+        // Generate a username based on email if not provided
+        var userName = registration.Email.Split('@')[0]; // Basic approach - use first part of email
+
         var user = new IdentityUser
         {
-            UserName = registration.UserName,
+            UserName = userName,
             Email = registration.Email
         };
 
@@ -140,16 +143,16 @@ public class AuthController : ControllerBase
                 FirstName = registration.FirstName,
                 LastName = registration.LastName,
                 IdentityUserId = user.Id,
+                // Address removed
             });
             _dbContext.SaveChanges();
 
             var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.UserName.ToString()),
-                    new Claim(ClaimTypes.Email, user.Email)
-
-                };
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName.ToString()),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             HttpContext.SignInAsync(
@@ -158,6 +161,14 @@ public class AuthController : ControllerBase
 
             return Ok();
         }
-        return StatusCode(500);
+        else
+        {
+            // Log the errors for debugging
+            foreach (var error in result.Errors)
+            {
+                Console.WriteLine($"Registration error: {error.Description}");
+            }
+            return BadRequest(result.Errors.Select(e => e.Description));
+        }
     }
 }
