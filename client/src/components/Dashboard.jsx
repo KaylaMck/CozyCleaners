@@ -42,7 +42,7 @@ export default function Dashboard() {
 
   return (
     <div className="container">
-      <h2 className="mb-4">Dashboard</h2>
+      <h2 className="mb-4">My Dashboard</h2>
 
       <section className="mb-5">
         <h3>Active Requests</h3>

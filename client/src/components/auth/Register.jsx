@@ -82,22 +82,26 @@ export default function Register({ setLoggedInUser }) {
           }}
         />
       </FormGroup>
-      
+
       <FormGroup>
         <Label>I am a:</Label>
-        <div>
-          <FormGroup check inline>
-            <Input
-              type="radio"
-              name="role"
-              id="roleClient"
-              checked={role === "Client"}
-              onChange={() => setRole("Client")}
-            />
-            <Label check for="roleClient">
-              Homeowner (Client)
-            </Label>
-            <FormGroup check inline>
+        <div className="d-flex">
+          <div style={{ marginRight: "30px" }}>
+            <FormGroup check>
+              <Input
+                type="radio"
+                name="role"
+                id="roleClient"
+                checked={role === "Client"}
+                onChange={() => setRole("Client")}
+              />
+              <Label check for="roleClient">
+                Homeowner (Client)
+              </Label>
+            </FormGroup>
+          </div>
+          <div>
+            <FormGroup check>
               <Input
                 type="radio"
                 name="role"
@@ -105,9 +109,11 @@ export default function Register({ setLoggedInUser }) {
                 checked={role === "Cleaner"}
                 onChange={() => setRole("Cleaner")}
               />
-              <Label check for="roleCleaner">Professional Cleaner</Label>
+              <Label check for="roleCleaner">
+                Professional Cleaner
+              </Label>
             </FormGroup>
-          </FormGroup>
+          </div>
         </div>
       </FormGroup>
 

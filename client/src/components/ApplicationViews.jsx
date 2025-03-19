@@ -1,4 +1,4 @@
-// Update your ApplicationViews.jsx
+// ApplicationViews.jsx
 import { Route, Routes } from "react-router-dom";
 import { AuthorizedRoute } from "./auth/AuthorizedRoute";
 import Login from "./auth/Login";
@@ -7,8 +7,9 @@ import BookingForm from "./BookingForm";
 import AddressForm from "./AddressForm";
 import Dashboard from "./Dashboard";
 import RequestDetails from "./RequestDetails";
-import ServicesList from "./ServiceList";
 import CompletedCleanings from "./CompletedCleanings";
+import CleanerDashboard from "./CleanerDashboard";
+import ServicesList from "./ServiceList";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -18,7 +19,19 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           index
           element={
             <AuthorizedRoute loggedInUser={loggedInUser}>
-              <Dashboard />
+              {loggedInUser?.roles?.includes("Cleaner") ? (
+                <CleanerDashboard />
+              ) : (
+                <Dashboard />
+              )}
+            </AuthorizedRoute>
+          }
+        />
+        <Route
+          path="cleaner"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser} roles={["Cleaner"]}>
+              <CleanerDashboard />
             </AuthorizedRoute>
           }
         />
@@ -33,7 +46,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
         <Route
           path="book"
           element={
-            <AuthorizedRoute loggedInUser={loggedInUser}>
+            <AuthorizedRoute loggedInUser={loggedInUser} roles={["Client"]}>
               <BookingForm />
             </AuthorizedRoute>
           }
@@ -41,7 +54,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
         <Route
           path="addresses/new"
           element={
-            <AuthorizedRoute loggedInUser={loggedInUser}>
+            <AuthorizedRoute loggedInUser={loggedInUser} roles={["Client"]}>
               <AddressForm />
             </AuthorizedRoute>
           }
