@@ -107,11 +107,8 @@ public class AuthController : ControllerBase
                 Id = profile.Id,
                 FirstName = profile.FirstName,
                 LastName = profile.LastName,
-                // Address = profile.Address,
-                // IdentityUserId = identityUserId,
-                // UserName = User.FindFirstValue(ClaimTypes.Name),
                 Email = User.FindFirstValue(ClaimTypes.Email),
-                // Roles = roles
+                Roles = roles
             };
 
             return Ok(userDto);
@@ -138,21 +135,26 @@ public class AuthController : ControllerBase
         var result = await _userManager.CreateAsync(user, password);
         if (result.Succeeded)
         {
+            // Add this: Assign the selected role or default to "Client"
+            string role = !string.IsNullOrEmpty(registration.Role) ? registration.Role : "Client";
+            await _userManager.AddToRoleAsync(user, role);
+
             _dbContext.UserProfiles.Add(new UserProfile
             {
                 FirstName = registration.FirstName,
                 LastName = registration.LastName,
                 IdentityUserId = user.Id,
-                // Address removed
             });
             _dbContext.SaveChanges();
 
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName.ToString()),
-                new Claim(ClaimTypes.Email, user.Email)
-            };
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.UserName.ToString()),
+            new Claim(ClaimTypes.Email, user.Email),
+            // Add this: Include the role in the claims
+            new Claim(ClaimTypes.Role, role)
+        };
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             HttpContext.SignInAsync(

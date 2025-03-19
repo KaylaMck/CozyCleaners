@@ -11,7 +11,7 @@ namespace CozyCleaners.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "Client")]
     public class CleaningRequestsController : ControllerBase
     {
         private readonly CozyCleanersDbContext _dbContext;
@@ -301,6 +301,70 @@ namespace CozyCleaners.Controllers
                 };
 
                 return Ok(responseObject);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // Add this method to your CleaningRequestsController.cs
+
+        // GET: api/CleaningRequests/completed
+        [HttpGet("completed")]
+        public IActionResult GetCompletedCleaningRequests()
+        {
+            try
+            {
+                var identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var userProfile = _dbContext.UserProfiles
+                    .FirstOrDefault(up => up.IdentityUserId == identityUserId);
+
+                if (userProfile == null)
+                {
+                    return NotFound("User profile not found");
+                }
+
+                // Get cleaning requests with status "Completed" (assuming StatusId 2 is "Completed")
+                var requests = _dbContext.CleaningRequests
+                    .Include(cr => cr.Status)
+                    .Include(cr => cr.TimeSlot)
+                    .Include(cr => cr.Address)
+                    .Where(cr => cr.ClientId == userProfile.Id && cr.StatusId == 2)
+                    .ToList();
+
+                var completedRequests = new List<object>();
+
+                foreach (var request in requests)
+                {
+                    // Get services for this request
+                    var services = _dbContext.RequestServices
+                        .Include(rs => rs.Service)
+                        .Where(rs => rs.RequestId == request.Id)
+                        .Select(rs => new ServiceDTO
+                        {
+                            Id = rs.Service.Id,
+                            Name = rs.Service.Name,
+                            Description = rs.Service.Description,
+                            Price = rs.Service.Price
+                        })
+                        .ToList();
+
+                    // Calculate total price
+                    decimal totalPrice = services.Sum(s => s.Price);
+
+                    completedRequests.Add(new
+                    {
+                        Id = request.Id,
+                        Date = request.Date,
+                        TimeSlot = request.TimeSlot.Title,
+                        Address = $"{request.Address.Street}, {request.Address.City}, {request.Address.State} {request.Address.ZipCode}",
+                        Services = services,
+                        TotalPrice = totalPrice
+                    });
+                }
+
+                return Ok(completedRequests);
             }
             catch (Exception ex)
             {

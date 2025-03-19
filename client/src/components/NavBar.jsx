@@ -1,10 +1,13 @@
-// NavBar.jsx
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Navbar, Nav, Container, Button } from 'react-bootstrap';
 import { logout } from '../managers/authManager';
 
 function NavBar({ loggedInUser, setLoggedInUser }) {
   const navigate = useNavigate();
+  
+  const isClient = loggedInUser?.roles?.includes("Client");
+  const isCleaner = loggedInUser?.roles?.includes("Cleaner");
   
   const handleLogout = () => {
     logout().then(() => {
@@ -14,49 +17,50 @@ function NavBar({ loggedInUser, setLoggedInUser }) {
   };
 
   return (
-    // Remove the container class to make it full width
-    <nav className="navbar navbar-expand-lg navbar-light bg-light mb-4">
-      <div className="container-fluid"> {/* Change container to container-fluid */}
-        <Link className="navbar-brand" to="/">Cozy Cleaners</Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        
-        <div className="collapse navbar-collapse" id="navbarNav">
-          {loggedInUser ? (
-            <>
-              <ul className="navbar-nav me-auto">
-                <li className="nav-item">
-                  <Link className="nav-link" to="/">Home</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/book">Book A Cleaning</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/services">Services</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/completed">Completed Cleanings</Link>
-                </li>
-              </ul>
-              <span className="navbar-text me-3">
+    <Navbar bg="light" expand="lg" className="mb-4">
+      <Container>
+        <Navbar.Brand as={Link} to="/">Cozy Cleaners</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="me-auto">
+            {loggedInUser ? (
+              <>
+                {isCleaner && (
+                  <Nav.Link as={Link} to="/cleaner">Cleaner Dashboard</Nav.Link>
+                )}
+                
+                {isClient && (
+                  <>
+                    <Nav.Link as={Link} to="/">Dashboard</Nav.Link>
+                    <Nav.Link as={Link} to="/book">Book A Cleaning</Nav.Link>
+                    <Nav.Link as={Link} to="/services">Services</Nav.Link>
+                    <Nav.Link as={Link} to="/completed">Completed Cleanings</Nav.Link>
+                  </>
+                )}
+                
+                <Nav.Link as={Link} to="/profile">My Profile</Nav.Link>
+              </>
+            ) : (
+              <>
+                <Nav.Link as={Link} to="/login">Login</Nav.Link>
+                <Nav.Link as={Link} to="/register">Register</Nav.Link>
+              </>
+            )}
+          </Nav>
+          
+          {loggedInUser && (
+            <div className="d-flex align-items-center">
+              <span className="me-3">
                 Hello, {loggedInUser.firstName}
               </span>
-              <button onClick={handleLogout} className="btn btn-outline-danger">Logout</button>
-            </>
-          ) : (
-            <ul className="navbar-nav ms-auto">
-              <li className="nav-item">
-                <Link className="nav-link" to="/login">Login</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/register">Register</Link>
-              </li>
-            </ul>
+              <Button variant="outline-danger" onClick={handleLogout}>
+                Logout
+              </Button>
+            </div>
           )}
-        </div>
-      </div>
-    </nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 }
 

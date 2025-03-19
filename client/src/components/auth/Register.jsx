@@ -9,6 +9,7 @@ export default function Register({ setLoggedInUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState("Client");
 
   const [passwordMismatch, setPasswordMismatch] = useState();
   const [registrationFailure, setRegistrationFailure] = useState(false);
@@ -26,6 +27,7 @@ export default function Register({ setLoggedInUser }) {
         lastName,
         email,
         password,
+        role,
       };
 
       // For debugging
@@ -34,7 +36,12 @@ export default function Register({ setLoggedInUser }) {
       register(newUser).then((user) => {
         if (user) {
           setLoggedInUser(user);
-          navigate("/");
+          // Redirect to appropriate dashboard based on role
+          if (role === "Cleaner") {
+            navigate("/cleaner");
+          } else {
+            navigate("/");
+          }
         } else {
           setRegistrationFailure(true);
         }
@@ -75,6 +82,35 @@ export default function Register({ setLoggedInUser }) {
           }}
         />
       </FormGroup>
+      
+      <FormGroup>
+        <Label>I am a:</Label>
+        <div>
+          <FormGroup check inline>
+            <Input
+              type="radio"
+              name="role"
+              id="roleClient"
+              checked={role === "Client"}
+              onChange={() => setRole("Client")}
+            />
+            <Label check for="roleClient">
+              Homeowner (Client)
+            </Label>
+            <FormGroup check inline>
+              <Input
+                type="radio"
+                name="role"
+                id="roleCleaner"
+                checked={role === "Cleaner"}
+                onChange={() => setRole("Cleaner")}
+              />
+              <Label check for="roleCleaner">Professional Cleaner</Label>
+            </FormGroup>
+          </FormGroup>
+        </div>
+      </FormGroup>
+
       <FormGroup>
         <Label>Password</Label>
         <Input

@@ -3,6 +3,7 @@ using System;
 using CozyCleaners.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CozyCleaners.Migrations
 {
     [DbContext(typeof(CozyCleanersDbContext))]
-    partial class CozyCleanersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250306045959_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,32 +24,6 @@ namespace CozyCleaners.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("CozyCleaners.Models.ClaimedRequest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("ClaimedTime")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("CleanerId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RequestId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CleanerId");
-
-                    b.HasIndex("RequestId");
-
-                    b.ToTable("ClaimedRequests");
-                });
 
             modelBuilder.Entity("CozyCleaners.Models.CleaningRequest", b =>
                 {
@@ -86,30 +63,48 @@ namespace CozyCleaners.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 100,
-                            AddressId = 100,
+                            Id = 1,
+                            AddressId = 1,
                             ClientId = 2,
-                            Date = new DateTime(2025, 3, 22, 0, 34, 58, 645, DateTimeKind.Local).AddTicks(1845),
+                            Date = new DateTime(2025, 3, 8, 22, 59, 59, 596, DateTimeKind.Local).AddTicks(5153),
                             StatusId = 1,
                             TimeSlotId = 1
                         },
                         new
                         {
-                            Id = 101,
-                            AddressId = 100,
+                            Id = 2,
+                            AddressId = 2,
                             ClientId = 2,
-                            Date = new DateTime(2025, 3, 9, 0, 34, 58, 645, DateTimeKind.Local).AddTicks(1956),
-                            StatusId = 2,
+                            Date = new DateTime(2025, 3, 12, 22, 59, 59, 596, DateTimeKind.Local).AddTicks(5197),
+                            StatusId = 1,
                             TimeSlotId = 2
                         },
                         new
                         {
-                            Id = 102,
-                            AddressId = 100,
+                            Id = 3,
+                            AddressId = 1,
                             ClientId = 2,
-                            Date = new DateTime(2025, 3, 14, 0, 34, 58, 645, DateTimeKind.Local).AddTicks(1958),
-                            StatusId = 3,
+                            Date = new DateTime(2025, 2, 23, 22, 59, 59, 596, DateTimeKind.Local).AddTicks(5199),
+                            StatusId = 2,
                             TimeSlotId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AddressId = 2,
+                            ClientId = 2,
+                            Date = new DateTime(2025, 2, 13, 22, 59, 59, 596, DateTimeKind.Local).AddTicks(5201),
+                            StatusId = 2,
+                            TimeSlotId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AddressId = 1,
+                            ClientId = 2,
+                            Date = new DateTime(2025, 2, 28, 22, 59, 59, 596, DateTimeKind.Local).AddTicks(5203),
+                            StatusId = 3,
+                            TimeSlotId = 2
                         });
                 });
 
@@ -141,24 +136,45 @@ namespace CozyCleaners.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 100,
+                            Id = 1,
                             Quantity = 1,
-                            RequestId = 100,
+                            RequestId = 1,
                             ServiceId = 1
                         },
                         new
                         {
-                            Id = 101,
+                            Id = 2,
                             Quantity = 1,
-                            RequestId = 101,
+                            RequestId = 2,
                             ServiceId = 2
                         },
                         new
                         {
-                            Id = 102,
+                            Id = 3,
                             Quantity = 1,
-                            RequestId = 102,
+                            RequestId = 3,
+                            ServiceId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Quantity = 1,
+                            RequestId = 3,
+                            ServiceId = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Quantity = 1,
+                            RequestId = 4,
                             ServiceId = 3
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Quantity = 1,
+                            RequestId = 5,
+                            ServiceId = 1
                         });
                 });
 
@@ -240,11 +256,6 @@ namespace CozyCleaners.Migrations
                         {
                             Id = 3,
                             Title = "Canceled"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Title = "In Progress"
                         });
                 });
 
@@ -332,12 +343,21 @@ namespace CozyCleaners.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 100,
+                            Id = 1,
                             City = "Nashville",
                             State = "TN",
                             Street = "123 Main Street",
                             UserProfileId = 2,
                             ZipCode = "37203"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            City = "Nashville",
+                            State = "TN",
+                            Street = "456 Broadway",
+                            UserProfileId = 2,
+                            ZipCode = "37201"
                         });
                 });
 
@@ -381,13 +401,6 @@ namespace CozyCleaners.Migrations
                             FirstName = "Demo",
                             IdentityUserId = "e31d1fe4-7fb6-4129-a1c9-f9f9a3127212",
                             LastName = "User"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            FirstName = "Cleaner",
-                            IdentityUserId = "a7d3af36-1784-4e4b-a18a-547616f2284a",
-                            LastName = "Demo"
                         });
                 });
 
@@ -421,19 +434,7 @@ namespace CozyCleaners.Migrations
                         {
                             Id = "c3aaeb97-d2ba-4a53-a521-4eea61e59b35",
                             Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "ff4f7ced-cad4-4035-9dd1-2e39ada7f83b",
-                            Name = "Client",
-                            NormalizedName = "CLIENT"
-                        },
-                        new
-                        {
-                            Id = "06bb4a33-d197-4991-bd9e-9c130e387cca",
-                            Name = "Cleaner",
-                            NormalizedName = "CLEANER"
+                            NormalizedName = "admin"
                         });
                 });
 
@@ -530,15 +531,13 @@ namespace CozyCleaners.Migrations
                         {
                             Id = "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "05e2f23b-9107-44f1-9471-65abd1611351",
+                            ConcurrencyStamp = "2199a392-f552-4ccb-8664-edcc5e71612c",
                             Email = "admina@strator.comx",
-                            EmailConfirmed = true,
+                            EmailConfirmed = false,
                             LockoutEnabled = false,
-                            NormalizedEmail = "ADMINA@STRATOR.COMX",
-                            NormalizedUserName = "ADMINISTRATOR",
-                            PasswordHash = "AQAAAAIAAYagAAAAELm7ZuKwYyuFbBdK2JkHRDq7KcF9objtYLeRkStbz7fkcs5mboV7P/Kw2gI8AUAz3w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFC/2jatFWVcxK4n2CoJzVaAQkvLE1V3m80p5MvE5srggN/BqO+1V9aUG8V2VIEXsA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b3cd9d3c-eed4-47fb-ba1c-f0a00cb9cef7",
+                            SecurityStamp = "5d6cbb78-54ee-4140-b9df-780ad7d779d8",
                             TwoFactorEnabled = false,
                             UserName = "Administrator"
                         },
@@ -546,33 +545,17 @@ namespace CozyCleaners.Migrations
                         {
                             Id = "e31d1fe4-7fb6-4129-a1c9-f9f9a3127212",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fc528b1b-eacc-451f-a5d5-35a72830f489",
+                            ConcurrencyStamp = "d70b8380-3a74-4ba7-8cee-65d996b82c0d",
                             Email = "demo@cozy.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "DEMO@COZY.COM",
                             NormalizedUserName = "DEMO@COZY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEK+2OagY4jE+gWggCbQPSXynHvh+NevAneb3pOdbs6P/BQNaC+zFklZNIulmknc4Ig==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELDDFLwnalgaUuoUcJhAvg/bU1f65YP36A40zffn9Uj7nhnIOSnSvorwc0r0wXmYRA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "451b7d70-ad38-4a7c-b9c1-e51ff42ab963",
+                            SecurityStamp = "2dcc4cb4-817b-43b3-8720-fac8e0771cf9",
                             TwoFactorEnabled = false,
                             UserName = "demo@cozy.com"
-                        },
-                        new
-                        {
-                            Id = "a7d3af36-1784-4e4b-a18a-547616f2284a",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "5c014edb-c243-409b-bac0-e0126e3daa43",
-                            Email = "cleaner@cozy.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "CLEANER@COZY.COM",
-                            NormalizedUserName = "CLEANER@COZY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOO5eDO76XA2kIbf2r5mZRdqretKtYtjh27OxiILWmFooRxLbX75oM6WcDJI00C7YQ==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "41a2cf1a-3e66-48a9-b1f2-720b8e919db3",
-                            TwoFactorEnabled = false,
-                            UserName = "cleaner@cozy.com"
                         });
                 });
 
@@ -642,16 +625,6 @@ namespace CozyCleaners.Migrations
                         {
                             UserId = "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f",
                             RoleId = "c3aaeb97-d2ba-4a53-a521-4eea61e59b35"
-                        },
-                        new
-                        {
-                            UserId = "e31d1fe4-7fb6-4129-a1c9-f9f9a3127212",
-                            RoleId = "ff4f7ced-cad4-4035-9dd1-2e39ada7f83b"
-                        },
-                        new
-                        {
-                            UserId = "a7d3af36-1784-4e4b-a18a-547616f2284a",
-                            RoleId = "06bb4a33-d197-4991-bd9e-9c130e387cca"
                         });
                 });
 
@@ -672,25 +645,6 @@ namespace CozyCleaners.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("CozyCleaners.Models.ClaimedRequest", b =>
-                {
-                    b.HasOne("CozyCleaners.Models.UserProfile", "Cleaner")
-                        .WithMany()
-                        .HasForeignKey("CleanerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CozyCleaners.Models.CleaningRequest", "Request")
-                        .WithMany()
-                        .HasForeignKey("RequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cleaner");
-
-                    b.Navigation("Request");
                 });
 
             modelBuilder.Entity("CozyCleaners.Models.CleaningRequest", b =>

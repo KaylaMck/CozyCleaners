@@ -8,6 +8,7 @@ import AddressForm from "./AddressForm";
 import Dashboard from "./Dashboard";
 import RequestDetails from "./RequestDetails";
 import ServicesList from "./ServiceList";
+import CompletedCleanings from "./CompletedCleanings";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -50,6 +51,14 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           element={
             <AuthorizedRoute loggedInUser={loggedInUser}>
               <RequestDetails />
+            </AuthorizedRoute>
+          }
+        />
+        <Route
+          path="completed"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
+              <CompletedCleanings />
             </AuthorizedRoute>
           }
         />

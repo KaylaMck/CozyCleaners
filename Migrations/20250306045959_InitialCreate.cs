@@ -322,7 +322,11 @@ namespace CozyCleaners.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f", 0, "d30f7feb-1858-454d-9dc3-def5b18eb9a5", "admina@strator.comx", false, false, null, null, null, "AQAAAAIAAYagAAAAEI0fMwb2oTvtqUbL18ex98EYJJ0YDq9cirY13Wwv2a8kxP1k+bpd8nlxfGgzEuYz+A==", null, false, "229a215a-c1cc-4231-87e6-50ef04aa67ec", false, "Administrator" });
+                values: new object[,]
+                {
+                    { "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f", 0, "2199a392-f552-4ccb-8664-edcc5e71612c", "admina@strator.comx", false, false, null, null, null, "AQAAAAIAAYagAAAAEFC/2jatFWVcxK4n2CoJzVaAQkvLE1V3m80p5MvE5srggN/BqO+1V9aUG8V2VIEXsA==", null, false, "5d6cbb78-54ee-4140-b9df-780ad7d779d8", false, "Administrator" },
+                    { "e31d1fe4-7fb6-4129-a1c9-f9f9a3127212", 0, "d70b8380-3a74-4ba7-8cee-65d996b82c0d", "demo@cozy.com", true, false, null, "DEMO@COZY.COM", "DEMO@COZY.COM", "AQAAAAIAAYagAAAAELDDFLwnalgaUuoUcJhAvg/bU1f65YP36A40zffn9Uj7nhnIOSnSvorwc0r0wXmYRA==", null, false, "2dcc4cb4-817b-43b3-8720-fac8e0771cf9", false, "demo@cozy.com" }
+                });
 
             migrationBuilder.InsertData(
                 table: "Services",
@@ -362,7 +366,45 @@ namespace CozyCleaners.Migrations
             migrationBuilder.InsertData(
                 table: "UserProfiles",
                 columns: new[] { "Id", "FirstName", "IdentityUserId", "LastName" },
-                values: new object[] { 1, "Admina", "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f", "Strator" });
+                values: new object[,]
+                {
+                    { 1, "Admina", "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f", "Strator" },
+                    { 2, "Demo", "e31d1fe4-7fb6-4129-a1c9-f9f9a3127212", "User" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "UserAddresses",
+                columns: new[] { "Id", "City", "State", "Street", "UserProfileId", "ZipCode" },
+                values: new object[,]
+                {
+                    { 1, "Nashville", "TN", "123 Main Street", 2, "37203" },
+                    { 2, "Nashville", "TN", "456 Broadway", 2, "37201" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "CleaningRequests",
+                columns: new[] { "Id", "AddressId", "ClientId", "Date", "StatusId", "TimeSlotId" },
+                values: new object[,]
+                {
+                    { 1, 1, 2, new DateTime(2025, 3, 8, 22, 59, 59, 596, DateTimeKind.Local).AddTicks(5153), 1, 1 },
+                    { 2, 2, 2, new DateTime(2025, 3, 12, 22, 59, 59, 596, DateTimeKind.Local).AddTicks(5197), 1, 2 },
+                    { 3, 1, 2, new DateTime(2025, 2, 23, 22, 59, 59, 596, DateTimeKind.Local).AddTicks(5199), 2, 3 },
+                    { 4, 2, 2, new DateTime(2025, 2, 13, 22, 59, 59, 596, DateTimeKind.Local).AddTicks(5201), 2, 1 },
+                    { 5, 1, 2, new DateTime(2025, 2, 28, 22, 59, 59, 596, DateTimeKind.Local).AddTicks(5203), 3, 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "RequestServices",
+                columns: new[] { "Id", "Quantity", "RequestId", "ServiceId" },
+                values: new object[,]
+                {
+                    { 1, 1, 1, 1 },
+                    { 2, 1, 2, 2 },
+                    { 3, 1, 3, 1 },
+                    { 4, 1, 3, 2 },
+                    { 5, 1, 4, 3 },
+                    { 6, 1, 5, 1 }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

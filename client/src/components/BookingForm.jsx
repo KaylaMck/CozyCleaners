@@ -181,7 +181,7 @@ const handleSubmit = async (e) => {
                 ))}
               </select>
               <div className="mt-2">
-                <Link to="/addresses/new">Add another address</Link>
+                <Link to="/addresses/new">Add new address</Link>
               </div>
             </>
           )}
