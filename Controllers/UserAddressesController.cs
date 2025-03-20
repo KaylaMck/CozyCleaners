@@ -11,7 +11,7 @@ namespace CozyCleaners.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Client")]
+    [Authorize]
     public class UserAddressesController : ControllerBase
     {
         private readonly CozyCleanersDbContext _dbContext;
@@ -75,6 +75,39 @@ namespace CozyCleaners.Controllers
 
             addressDTO.Id = newAddress.Id;
             return Created($"/api/UserAddresses/{newAddress.Id}", addressDTO);
+        }
+
+        // Make sure this exists in your UserAddressesController.cs
+        [HttpGet("{id}")]
+        public IActionResult GetUserAddress(int id)
+        {
+            var identityUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userProfile = _dbContext.UserProfiles
+                .FirstOrDefault(up => up.IdentityUserId == identityUserId);
+
+            if (userProfile == null)
+            {
+                return NotFound("User profile not found");
+            }
+
+            var address = _dbContext.UserAddresses
+                .FirstOrDefault(ua => ua.Id == id && ua.UserProfileId == userProfile.Id);
+
+            if (address == null)
+            {
+                return NotFound("Address not found");
+            }
+
+            var addressDTO = new UserAddressDTO
+            {
+                Id = address.Id,
+                Street = address.Street,
+                City = address.City,
+                State = address.State,
+                ZipCode = address.ZipCode
+            };
+
+            return Ok(addressDTO);
         }
     }
 }

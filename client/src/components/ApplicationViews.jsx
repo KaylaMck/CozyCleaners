@@ -10,6 +10,7 @@ import RequestDetails from "./RequestDetails";
 import CompletedCleanings from "./CompletedCleanings";
 import CleanerDashboard from "./CleanerDashboard";
 import ServicesList from "./ServiceList";
+import UserProfilePage from "./UserProfilePage";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -72,6 +73,34 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           element={
             <AuthorizedRoute loggedInUser={loggedInUser}>
               <CompletedCleanings />
+            </AuthorizedRoute>
+          }
+        />
+        // ApplicationViews.jsx routes update
+        <Route
+          path="profile"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser}>
+              <UserProfilePage
+                loggedInUser={loggedInUser}
+                setLoggedInUser={setLoggedInUser}
+              />
+            </AuthorizedRoute>
+          }
+        />
+        <Route
+          path="addresses/new"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser} roles={["Client"]}>
+              <AddressForm />
+            </AuthorizedRoute>
+          }
+        />
+        <Route
+          path="addresses/edit/:id"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser} roles={["Client"]}>
+              <AddressForm />
             </AuthorizedRoute>
           }
         />

@@ -1,4 +1,4 @@
-// CleanerDashboard.jsx
+// CleanerDashboard.jsx - Updated to remove completed cleanings tab
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
@@ -8,7 +8,6 @@ export default function CleanerDashboard() {
   const [activeTab, setActiveTab] = useState('1');
   const [availableRequests, setAvailableRequests] = useState([]);
   const [assignedRequests, setAssignedRequests] = useState([]);
-  const [completedRequests, setCompletedRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -19,22 +18,19 @@ export default function CleanerDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [availableRes, assignedRes, completedRes] = await Promise.all([
+        const [availableRes, assignedRes] = await Promise.all([
           fetch('/api/Cleaner/available'),
-          fetch('/api/Cleaner/assigned'),
-          fetch('/api/Cleaner/completed')
+          fetch('/api/Cleaner/assigned')
         ]);
 
-        if (availableRes.ok && assignedRes.ok && completedRes.ok) {
-          const [available, assigned, completed] = await Promise.all([
+        if (availableRes.ok && assignedRes.ok) {
+          const [available, assigned] = await Promise.all([
             availableRes.json(),
-            assignedRes.json(),
-            completedRes.json()
+            assignedRes.json()
           ]);
 
           setAvailableRequests(available);
           setAssignedRequests(assigned);
-          setCompletedRequests(completed);
         } else {
           setError('Failed to load data');
         }
@@ -84,10 +80,8 @@ export default function CleanerDashboard() {
       });
 
       if (response.ok) {
-        // Update the lists by moving the completed request from assigned to completed
-        const completedRequest = assignedRequests.find(r => r.id === requestId);
+        // Remove the completed request from assigned list
         setAssignedRequests(assignedRequests.filter(r => r.id !== requestId));
-        setCompletedRequests([...completedRequests, completedRequest]);
       } else {
         setError('Failed to complete request');
       }
@@ -122,14 +116,6 @@ export default function CleanerDashboard() {
             onClick={() => { toggle('2'); }}
           >
             My Assigned Cleanings ({assignedRequests.length})
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: activeTab === '3' })}
-            onClick={() => { toggle('3'); }}
-          >
-            Completed Cleanings ({completedRequests.length})
           </NavLink>
         </NavItem>
       </Nav>
@@ -198,49 +184,13 @@ export default function CleanerDashboard() {
             </div>
           )}
         </TabPane>
-        
-        <TabPane tabId="3">
-          <h3>Completed Cleanings</h3>
-          {completedRequests.length === 0 ? (
-            <p>You don't have any completed cleanings yet.</p>
-          ) : (
-            <div className="table-responsive">
-              <table className="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Client</th>
-                    <th>Address</th>
-                    <th>Services</th>
-                    <th>Price</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {completedRequests.map(request => (
-                    <tr key={request.id}>
-                      <td>{new Date(request.date).toLocaleDateString()}</td>
-                      <td>{request.clientName}</td>
-                      <td>{request.address}</td>
-                      <td>{request.services.map(s => s.name).join(', ')}</td>
-                      <td>${request.totalPrice.toFixed(2)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td colSpan="4" className="text-end"><strong>Total Earnings:</strong></td>
-                    <td>
-                      <strong>
-                        ${completedRequests.reduce((sum, request) => sum + request.totalPrice, 0).toFixed(2)}
-                      </strong>
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-          )}
-        </TabPane>
       </TabContent>
+      
+      <div className="text-center mt-4">
+        <Link to="/profile" className="btn btn-outline-primary">
+          View Completed Cleanings in My Profile
+        </Link>
+      </div>
     </div>
   );
 }

@@ -34,7 +34,6 @@ function NavBar({ loggedInUser, setLoggedInUser }) {
                     <Nav.Link as={Link} to="/">Dashboard</Nav.Link>
                     <Nav.Link as={Link} to="/book">Book A Cleaning</Nav.Link>
                     <Nav.Link as={Link} to="/services">Services</Nav.Link>
-                    <Nav.Link as={Link} to="/completed">Completed Cleanings</Nav.Link>
                   </>
                 )}
                 
