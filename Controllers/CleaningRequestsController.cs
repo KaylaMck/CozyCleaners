@@ -11,7 +11,7 @@ namespace CozyCleaners.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Client")]
+    [Authorize]
     public class CleaningRequestsController : ControllerBase
     {
         private readonly CozyCleanersDbContext _dbContext;
