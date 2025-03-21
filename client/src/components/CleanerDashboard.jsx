@@ -185,12 +185,6 @@ export default function CleanerDashboard() {
           )}
         </TabPane>
       </TabContent>
-      
-      <div className="text-center mt-4">
-        <Link to="/profile" className="btn btn-outline-primary">
-          View Completed Cleanings in My Profile
-        </Link>
-      </div>
     </div>
   );
 }
