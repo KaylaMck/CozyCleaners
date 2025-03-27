@@ -144,9 +144,9 @@ public class CozyCleanersDbContext : IdentityDbContext<IdentityUser>
 
         // Services
         modelBuilder.Entity<Service>().HasData(
-            new Service { Id = 1, Name = "Basic Cleaning", Description = "General cleaning of all rooms.", Price = 50.00m },
-            new Service { Id = 2, Name = "Deep Cleaning", Description = "Thorough cleaning including baseboards and behind appliances.", Price = 100.00m },
-            new Service { Id = 3, Name = "Move-out Cleaning", Description = "Full deep cleaning for moving out", Price = 150.00m }
+            new Service { Id = 1, Name = "Basic Cleaning", Description = "General cleaning of all rooms.", Price = 100.00m },
+            new Service { Id = 2, Name = "Deep Cleaning", Description = "Thorough cleaning including baseboards and behind appliances.", Price = 175.00m },
+            new Service { Id = 3, Name = "Move-out Cleaning", Description = "Full deep cleaning for moving out", Price = 250.00m }
         );
 
         // Demo user address

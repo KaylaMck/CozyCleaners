@@ -1,4 +1,4 @@
-/* Replace or update your App.css with this */
+/* Replace or update your App.css with this
 #root {
   width: 100%;
   margin: 0;
@@ -13,7 +13,7 @@
 }
 
 /* If you want to keep your table nicely styled */
-table {
+/* table {
   width: 100%;
   border-collapse: collapse;
 }
@@ -31,4 +31,36 @@ th {
 .navbar {
   margin-top: 0;
   width: 100%;
+} */ 
+
+/* Basic styling with original colors */
+:root {
+  --primary: #1976d2;      /* Original blue */
+  --primary-light: #e3f2fd;
+  --text-dark: #333333;
+  --text-light: #ffffff;
+  --border-radius: 8px;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  border: none;
+  margin-bottom: 1rem;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-outline-primary {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  color: var(--primary) !important;
 }

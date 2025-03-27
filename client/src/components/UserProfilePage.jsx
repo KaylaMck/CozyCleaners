@@ -3,19 +3,24 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
   Card,
-  CardBody,
-  CardHeader,
   ListGroup,
   ListGroupItem,
   Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   Form,
-  FormGroup,
-  Label,
-  Input,
-} from "reactstrap";
+} from "react-bootstrap";
+import {
+  FaUser,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaPencilAlt,
+  FaTrashAlt,
+  FaPlusCircle,
+  FaCalendarAlt,
+  FaClock,
+  FaCheckCircle,
+  FaEye,
+  FaTimes
+} from "react-icons/fa";
 
 export default function UserProfilePage({ loggedInUser, setLoggedInUser }) {
   const [userAddresses, setUserAddresses] = useState([]);
@@ -34,7 +39,6 @@ export default function UserProfilePage({ loggedInUser, setLoggedInUser }) {
   const isCleaner = loggedInUser?.roles?.includes("Cleaner");
   const isClient = loggedInUser?.roles?.includes("Client");
 
-  // Define toggle function here before any conditionals
   const toggleEditModal = () => {
     setEditModalOpen(!editModalOpen);
   };
@@ -149,8 +153,20 @@ export default function UserProfilePage({ loggedInUser, setLoggedInUser }) {
     }
   }, [loggedInUser, isCleaner, isClient]);
 
+  // Format date in a more readable way
+  const formatDate = (dateString) => {
+    const options = { month: 'short', day: 'numeric', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+  };
+
   if (loading) {
-    return <div>Loading profile information...</div>;
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "200px" }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading profile information...</span>
+        </div>
+      </div>
+    );
   }
 
   // Calculate total earnings for cleaners
@@ -160,31 +176,35 @@ export default function UserProfilePage({ loggedInUser, setLoggedInUser }) {
 
   return (
     <div className="container">
-      <h2 className="mb-4">Your Profile</h2>
+      <h2 className="mb-4">
+        <FaUser className="me-2 text-primary" />
+        Your Profile
+      </h2>
 
       <div className="row mb-4">
         <div className="col-md-6">
-          <Card>
-            <CardHeader className="d-flex justify-content-between align-items-center">
-              <h3 className="mb-0">Personal Information</h3>
-              <Button color="primary" size="sm" onClick={toggleEditModal}>
-                Edit Profile
+          <Card className="shadow-sm">
+            <Card.Header className="d-flex justify-content-between align-items-center bg-white">
+              <h3 className="mb-0 h5">Personal Information</h3>
+              <Button color="primary" size="sm" className="btn-sm btn-primary" onClick={toggleEditModal}>
+                <FaPencilAlt className="me-2" /> Edit Profile
               </Button>
-            </CardHeader>
-            <CardBody>
+            </Card.Header>
+            <Card.Body>
               <p>
-                <strong>Name:</strong> {loggedInUser.firstName}{" "}
+                <strong><FaUser className="me-2 text-muted" /> Name:</strong> {loggedInUser.firstName}{" "}
                 {loggedInUser.lastName}
               </p>
               <p>
-                <strong>Email:</strong> {loggedInUser.email}
+                <strong><FaEnvelope className="me-2 text-muted" /> Email:</strong> {loggedInUser.email}
               </p>
               {loggedInUser.roles && (
                 <p>
-                  <strong>Role:</strong> {loggedInUser.roles.join(", ")}
+                  <strong><FaUser className="me-2 text-muted" /> Role:</strong>{" "}
+                  <span className="badge bg-primary">{loggedInUser.roles.join(", ")}</span>
                 </p>
               )}
-            </CardBody>
+            </Card.Body>
           </Card>
         </div>
       </div>
@@ -193,25 +213,28 @@ export default function UserProfilePage({ loggedInUser, setLoggedInUser }) {
       {isClient && (
         <div className="row mb-4">
           <div className="col-12">
-            <Card>
-              <CardHeader className="d-flex justify-content-between align-items-center">
-                <h3 className="mb-0">Your Addresses</h3>
+            <Card className="shadow-sm">
+              <Card.Header className="d-flex justify-content-between align-items-center bg-white">
+                <h3 className="mb-0 h5">
+                  <FaMapMarkerAlt className="me-2 text-primary" /> Your Addresses
+                </h3>
                 <Link to="/addresses/new" className="btn btn-primary btn-sm">
-                  Add New Address
+                  <FaPlusCircle className="me-2" /> Add New Address
                 </Link>
-              </CardHeader>
-              <CardBody>
+              </Card.Header>
+              <Card.Body>
                 {userAddresses.length === 0 ? (
-                  <p>You don't have any saved addresses yet.</p>
+                  <p className="text-muted">You don't have any saved addresses yet.</p>
                 ) : (
                   <ListGroup>
                     {userAddresses.map((address) => (
                       <ListGroupItem
                         key={address.id}
-                        className="d-flex justify-content-between align-items-center"
+                        className="d-flex justify-content-between align-items-center border-0 border-bottom py-3"
                       >
                         <div>
                           <p className="mb-0">
+                            <FaMapMarkerAlt className="me-2 text-muted" />
                             {address.street}, {address.city}, {address.state}{" "}
                             {address.zipCode}
                           </p>
@@ -221,21 +244,21 @@ export default function UserProfilePage({ loggedInUser, setLoggedInUser }) {
                             to={`/addresses/edit/${address.id}`}
                             className="btn btn-sm btn-outline-primary me-2"
                           >
-                            Edit
+                            <FaPencilAlt className="me-1" /> Edit
                           </Link>
                           <Button
-                            color="outline-danger"
+                            variant="outline-danger"
                             size="sm"
                             onClick={() => handleDeleteAddress(address.id)}
                           >
-                            Delete
+                            <FaTrashAlt className="me-1" /> Delete
                           </Button>
                         </div>
                       </ListGroupItem>
                     ))}
                   </ListGroup>
                 )}
-              </CardBody>
+              </Card.Body>
             </Card>
           </div>
         </div>
@@ -244,121 +267,124 @@ export default function UserProfilePage({ loggedInUser, setLoggedInUser }) {
       {/* Completed Cleanings section (for both clients and cleaners) */}
       <div className="row mb-4">
         <div className="col-12">
-          <Card>
-            <CardHeader>
-              <h3 className="mb-0">Completed Cleanings</h3>
-            </CardHeader>
-            <CardBody>
+          <Card className="shadow-sm">
+            <Card.Header className="bg-white">
+              <h3 className="mb-0 h5">
+                <FaCheckCircle className="me-2 text-primary" /> Completed Cleanings
+              </h3>
+            </Card.Header>
+            <Card.Body>
               {completedCleanings.length === 0 ? (
-                <p>You don't have any completed cleanings yet.</p>
+                <p className="text-muted">You don't have any completed cleanings yet.</p>
               ) : (
-                <>
-                  <div className="table-responsive">
-                    <table className="table table-striped">
-                      <thead>
-                        <tr>
-                          <th>Date</th>
-                          {isCleaner && <th>Client</th>}
-                          <th>Address</th>
-                          <th>Services</th>
-                          <th>Price</th>
-                          {isClient && <th>Actions</th>}
+                <div className="table-responsive">
+                  <table className="table">
+                    <thead className="table-light">
+                      <tr>
+                        <th><FaCalendarAlt className="me-2" /> Date</th>
+                        {isCleaner && <th><FaUser className="me-2" /> Client</th>}
+                        <th><FaMapMarkerAlt className="me-2" /> Address</th>
+                        <th>Services</th>
+                        <th>Price</th>
+                        {isClient && <th>Actions</th>}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {completedCleanings.map((request) => (
+                        <tr key={request.id}>
+                          <td>{formatDate(request.date)}</td>
+                          {isCleaner && <td>{request.clientName}</td>}
+                          <td>{request.address}</td>
+                          <td>
+                            {request.services.map((s) => s.name).join(", ")}
+                          </td>
+                          <td>${request.totalPrice.toFixed(2)}</td>
+                          {isClient && (
+                            <td>
+                              <Link
+                                to={`/requests/${request.id}`}
+                                className="btn btn-sm btn-primary"
+                              >
+                                <FaEye className="me-1" /> View
+                              </Link>
+                            </td>
+                          )}
                         </tr>
-                      </thead>
-                      <tbody>
-                        {completedCleanings.map((request) => (
-                          <tr key={request.id}>
-                            <td>
-                              {new Date(request.date).toLocaleDateString()}
-                            </td>
-                            {isCleaner && <td>{request.clientName}</td>}
-                            <td>{request.address}</td>
-                            <td>
-                              {request.services.map((s) => s.name).join(", ")}
-                            </td>
-                            <td>${request.totalPrice.toFixed(2)}</td>
-                            {isClient && (
-                              <td>
-                                <Link
-                                  to={`/requests/${request.id}`}
-                                  className="btn btn-sm btn-primary"
-                                >
-                                  View Details
-                                </Link>
-                              </td>
-                            )}
-                          </tr>
-                        ))}
-                      </tbody>
-                      {isCleaner && (
-                        <tfoot>
-                          <tr>
-                            <td colSpan="4" className="text-end">
-                              <strong>Total Earnings:</strong>
-                            </td>
-                            <td>
-                              <strong>${totalEarnings.toFixed(2)}</strong>
-                            </td>
-                          </tr>
-                        </tfoot>
-                      )}
-                    </table>
-                  </div>
-                </>
+                      ))}
+                    </tbody>
+                    {isCleaner && (
+                      <tfoot>
+                        <tr>
+                          <td colSpan="4" className="text-end">
+                            <strong>Total Earnings:</strong>
+                          </td>
+                          <td>
+                            <strong>${totalEarnings.toFixed(2)}</strong>
+                          </td>
+                        </tr>
+                      </tfoot>
+                    )}
+                  </table>
+                </div>
               )}
-            </CardBody>
+            </Card.Body>
           </Card>
         </div>
       </div>
 
       {/* Edit Profile Modal */}
-      <Modal isOpen={editModalOpen} toggle={toggleEditModal}>
-        <ModalHeader toggle={toggleEditModal}>Edit Profile</ModalHeader>
-        <ModalBody>
+      <Modal show={editModalOpen} onHide={toggleEditModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Profile</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
           <Form onSubmit={handleProfileSubmit}>
-            <FormGroup>
-              <Label for="firstName">First Name</Label>
-              <Input
+            <Form.Group className="mb-3">
+              <Form.Label>
+                <FaUser className="me-2 text-muted" /> First Name
+              </Form.Label>
+              <Form.Control
                 type="text"
                 name="firstName"
-                id="firstName"
                 value={editedProfile.firstName}
                 onChange={handleProfileChange}
                 required
               />
-            </FormGroup>
-            <FormGroup>
-              <Label for="lastName">Last Name</Label>
-              <Input
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>
+                <FaUser className="me-2 text-muted" /> Last Name
+              </Form.Label>
+              <Form.Control
                 type="text"
                 name="lastName"
-                id="lastName"
                 value={editedProfile.lastName}
                 onChange={handleProfileChange}
                 required
               />
-            </FormGroup>
-            <FormGroup>
-              <Label for="email">Email</Label>
-              <Input
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>
+                <FaEnvelope className="me-2 text-muted" /> Email
+              </Form.Label>
+              <Form.Control
                 type="email"
                 name="email"
-                id="email"
                 value={editedProfile.email}
                 onChange={handleProfileChange}
                 required
               />
-            </FormGroup>
+            </Form.Group>
             <div className="d-flex justify-content-end">
-              <Button color="secondary" className="me-2" onClick={toggleEditModal}>
-                Cancel
+              <Button variant="secondary" className="me-2" onClick={toggleEditModal}>
+                <FaTimes className="me-2" /> Cancel
               </Button>
-              <Button color="primary" type="submit">
-                Save Changes
+              <Button variant="primary" type="submit">
+                <FaCheckCircle className="me-2" /> Save Changes
               </Button>
             </div>
           </Form>
-        </ModalBody>
+        </Modal.Body>
       </Modal>
     </div>
   );

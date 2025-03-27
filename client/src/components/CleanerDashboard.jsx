@@ -1,8 +1,17 @@
-// CleanerDashboard.jsx - Updated to remove completed cleanings tab
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
-import classnames from 'classnames';
+import { Row, Col, Card } from 'react-bootstrap';
+import { 
+  FaCalendarAlt, 
+  FaClock, 
+  FaMapMarkerAlt, 
+  FaUser, 
+  FaEye, 
+  FaCheckCircle,
+  FaDollarSign,
+  FaClipboardCheck,
+  FaHandsHelping
+} from 'react-icons/fa';
 
 export default function CleanerDashboard() {
   const [activeTab, setActiveTab] = useState('1');
@@ -10,10 +19,6 @@ export default function CleanerDashboard() {
   const [assignedRequests, setAssignedRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
-  const toggle = tab => {
-    if (activeTab !== tab) setActiveTab(tab);
-  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -91,106 +96,187 @@ export default function CleanerDashboard() {
     }
   };
 
+  // Format date in a more readable way
+  const formatDate = (dateString) => {
+    const options = { weekday: 'short', month: 'short', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+  };
+
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '200px' }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="container">
-      <h2 className="mb-4">Cleaner Dashboard</h2>
+      <h2 className="mb-4">
+        <FaClipboardCheck className="me-2 text-primary" />
+        Cleaner Dashboard
+      </h2>
       
       {error && <div className="alert alert-danger">{error}</div>}
       
-      <Nav tabs className="mb-4">
-        <NavItem>
-          <NavLink
-            className={classnames({ active: activeTab === '1' })}
-            onClick={() => { toggle('1'); }}
+      <div className="mb-4">
+        <div className="d-flex border-bottom">
+          <button 
+            className={`btn py-2 px-3 ${activeTab === '1' ? 'fw-bold text-primary' : 'text-muted'}`}
+            onClick={() => setActiveTab('1')}
+            style={{ 
+              textDecoration: 'none', 
+              boxShadow: 'none', 
+              outline: 'none',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: activeTab === '1' ? '3px solid #1976d2' : 'none'
+            }}
           >
+            <FaCalendarAlt className="me-2" />
             Available Requests ({availableRequests.length})
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink
-            className={classnames({ active: activeTab === '2' })}
-            onClick={() => { toggle('2'); }}
+          </button>
+          <button 
+            className={`btn py-2 px-3 ${activeTab === '2' ? 'fw-bold text-primary' : 'text-muted'}`}
+            onClick={() => setActiveTab('2')}
+            style={{ 
+              textDecoration: 'none', 
+              boxShadow: 'none', 
+              outline: 'none',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: activeTab === '2' ? '3px solid #1976d2' : 'none'
+            }}
           >
+            <FaHandsHelping className="me-2" />
             My Assigned Cleanings ({assignedRequests.length})
-          </NavLink>
-        </NavItem>
-      </Nav>
-      
-      <TabContent activeTab={activeTab}>
-        <TabPane tabId="1">
-          <h3>Available Cleaning Requests</h3>
-          {availableRequests.length === 0 ? (
-            <p>No available cleaning requests at this time.</p>
-          ) : (
-            <div className="row">
-              {availableRequests.map(request => (
-                <div key={request.id} className="col-md-6 col-lg-4 mb-4">
-                  <div className="card h-100">
-                    <div className="card-body">
-                      <h5 className="card-title">{new Date(request.date).toLocaleDateString()}</h5>
-                      <p className="card-text"><strong>Time:</strong> {request.timeSlot}</p>
-                      <p className="card-text"><strong>Address:</strong> {request.address}</p>
-                      <p className="card-text"><strong>Services:</strong> {request.services.map(s => s.name).join(', ')}</p>
-                      <p className="card-text"><strong>Price:</strong> ${request.totalPrice.toFixed(2)}</p>
-                    </div>
-                    <div className="card-footer">
-                      <button 
-                        className="btn btn-primary w-100" 
-                        onClick={() => handleClaimRequest(request.id)}
-                      >
-                        Claim This Cleaning
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </TabPane>
-        
-        <TabPane tabId="2">
-          <h3>My Assigned Cleanings</h3>
-          {assignedRequests.length === 0 ? (
-            <p>You don't have any assigned cleanings.</p>
-          ) : (
-            <div className="row">
-              {assignedRequests.map(request => (
-                <div key={request.id} className="col-md-6 col-lg-4 mb-4">
-                  <div className="card h-100">
-                    <div className="card-body">
-                      <h5 className="card-title">{new Date(request.date).toLocaleDateString()}</h5>
-                      <p className="card-text"><strong>Time:</strong> {request.timeSlot}</p>
-                      <p className="card-text"><strong>Address:</strong> {request.address}</p>
-                      <p className="card-text"><strong>Client:</strong> {request.clientName}</p>
-                      <p className="card-text"><strong>Services:</strong> {request.services.map(s => s.name).join(', ')}</p>
-                      <p className="card-text"><strong>Price:</strong> ${request.totalPrice.toFixed(2)}</p>
-                      <p className="card-text"><small className="text-muted">Claimed on: {new Date(request.claimedTime).toLocaleString()}</small></p>
-                    </div>
-                    <div className="card-footer">
-                      <button 
-                        className="btn btn-success w-100" 
-                        onClick={() => handleCompleteRequest(request.id)}
-                      >
-                        Mark as Completed
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </TabPane>
-      </TabContent>
-      
-      <div className="text-center mt-4">
-        <Link to="/profile" className="btn btn-outline-primary">
-          View Completed Cleanings in My Profile
-        </Link>
+          </button>
+        </div>
       </div>
+      
+      {activeTab === '1' && (
+        <div>
+          <h3 className="mb-3">Available Cleaning Requests</h3>
+          {availableRequests.length === 0 ? (
+            <div className="text-center p-5 bg-light rounded">
+              <FaCalendarAlt className="mb-3" style={{ fontSize: '2.5rem', color: '#b0bec5' }} />
+              <h4>No available cleaning requests</h4>
+              <p className="text-muted">Check back soon for new opportunities!</p>
+            </div>
+          ) : (
+            <Row>
+              {availableRequests.map(request => (
+                <Col key={request.id} md={6} lg={4} className="mb-4">
+                  <Card className="h-100 shadow-sm">
+                    <Card.Body>
+                      <h5 className="card-title mb-3">
+                        <FaCalendarAlt className="me-2 text-primary" />
+                        {formatDate(request.date)}
+                      </h5>
+                      
+                      <div className="mb-3 p-2 bg-light rounded">
+                        <div className="mb-2">
+                          <FaClock className="me-2 text-muted" /> 
+                          <span>{request.timeSlot}</span>
+                        </div>
+                        <div className="mb-2">
+                          <FaMapMarkerAlt className="me-2 text-muted" /> 
+                          <span>{request.address}</span>
+                        </div>
+                        <div>
+                          <FaDollarSign className="me-2 text-success" />
+                          <span className="fw-bold">${request.totalPrice.toFixed(2)}</span>
+                        </div>
+                      </div>
+                      
+                      <p className="card-text mb-3">
+                        <strong>Services:</strong> {request.services.map(s => s.name).join(', ')}
+                      </p>
+                      
+                      <div className="d-grid">
+                        <button 
+                          className="btn btn-primary" 
+                          onClick={() => handleClaimRequest(request.id)}
+                        >
+                          <FaHandsHelping className="me-2" />
+                          Claim This Cleaning
+                        </button>
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          )}
+        </div>
+      )}
+      
+      {activeTab === '2' && (
+        <div>
+          <h3 className="mb-3">My Assigned Cleanings</h3>
+          {assignedRequests.length === 0 ? (
+            <div className="text-center p-5 bg-light rounded">
+              <FaHandsHelping className="mb-3" style={{ fontSize: '2.5rem', color: '#b0bec5' }} />
+              <h4>You don't have any assigned cleanings</h4>
+              <p className="text-muted">Claim a cleaning request to get started!</p>
+            </div>
+          ) : (
+            <Row>
+              {assignedRequests.map(request => (
+                <Col key={request.id} md={6} lg={4} className="mb-4">
+                  <Card className="h-100 shadow-sm border-primary border-top">
+                    <Card.Body>
+                      <h5 className="card-title mb-3">
+                        <FaCalendarAlt className="me-2 text-primary" />
+                        {formatDate(request.date)}
+                      </h5>
+                      
+                      <div className="mb-3 p-2 bg-light rounded">
+                        <div className="mb-2">
+                          <FaClock className="me-2 text-muted" /> 
+                          <span>{request.timeSlot}</span>
+                        </div>
+                        <div className="mb-2">
+                          <FaMapMarkerAlt className="me-2 text-muted" /> 
+                          <span>{request.address}</span>
+                        </div>
+                        <div className="mb-2">
+                          <FaUser className="me-2 text-muted" /> 
+                          <span>{request.clientName}</span>
+                        </div>
+                        <div>
+                          <FaDollarSign className="me-2 text-success" />
+                          <span className="fw-bold">${request.totalPrice.toFixed(2)}</span>
+                        </div>
+                      </div>
+                      
+                      <p className="card-text mb-3">
+                        <strong>Services:</strong> {request.services.map(s => s.name).join(', ')}
+                      </p>
+                      
+                      <p className="card-text text-muted">
+                        <small>Claimed on: {new Date(request.claimedTime).toLocaleString()}</small>
+                      </p>
+                      
+                      <div className="d-grid">
+                        <button 
+                          className="btn btn-primary" 
+                          onClick={() => handleCompleteRequest(request.id)}
+                        >
+                          <FaCheckCircle className="me-2" />
+                          Mark as Completed
+                        </button>
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          )}
+        </div>
+      )}
     </div>
   );
 }
